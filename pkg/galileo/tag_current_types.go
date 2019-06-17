@@ -56,6 +56,10 @@ type coordTag struct {
 }
 
 func (c *coordTag) Parse(val []byte) error {
+	if len(val) != 9 {
+		return fmt.Errorf(" Некорректная длин секции координат : %x", val)
+	}
+
 	flgByte := val[0]
 
 	c.Latitude = float64(int32(binary.LittleEndian.Uint32(val[1:5]))) / float64(1000000)
@@ -73,7 +77,28 @@ type speedTag struct {
 }
 
 func (s *speedTag) Parse(val []byte) error {
+	if len(val) != 4 {
+		return fmt.Errorf(" Некорректная длин секции скорости : %x", val)
+	}
+
 	s.Speed = float64(binary.LittleEndian.Uint16(val[:2])) / 10
 	s.Course = binary.LittleEndian.Uint16(val[2:]) / 10
+	return nil
+}
+
+type intTag struct {
+	Val int `json:"val"`
+}
+
+func (u *intTag) Parse(val []byte) error {
+	switch size := len(val); {
+	case size == 1:
+		u.Val = int(val[0])
+	case size == 2:
+		u.Val = int(binary.LittleEndian.Uint16(val))
+	default:
+		return fmt.Errorf("Входной массив больше 2 байт: %x", val)
+	}
+
 	return nil
 }

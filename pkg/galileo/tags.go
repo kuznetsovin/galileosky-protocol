@@ -19,6 +19,12 @@ func (t *tag) SetValue(tagType string, val []byte) error {
 		v = &stringTag{}
 	case "time":
 		v = &timeTag{}
+	case "coord":
+		v = &coordTag{}
+	case "speed":
+		v = &speedTag{}
+	case "int":
+		v = &intTag{}
 	default:
 		return fmt.Errorf("Неизвестный тип данных: %s. Значение: %x", tagType, val)
 	}

@@ -65,3 +65,15 @@ func TestSpeedTag_Parse(t *testing.T) {
 		)
 	}
 }
+
+func TestIntTag_Parse(t *testing.T) {
+	b := []byte{0x00, 0x00}
+	r := intTag{}
+
+	if assert.NoError(t, r.Parse(b)) {
+		assert.Equal(t,
+			intTag{0},
+			r,
+		)
+	}
+}

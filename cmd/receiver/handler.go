@@ -14,6 +14,7 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 	var (
 		recvPacket []byte
 	)
+	defer conn.Close()
 
 	//packet.GalileoPaket
 	logger.Warnf("Установлено соединение с %s", conn.RemoteAddr())
@@ -32,7 +33,6 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 
 			// если пакет не егтс формата закрываем соединение
 			if headerBuf[0] != 0x01 {
-				_ = conn.Close()
 				logger.Warnf("Пакет не соответствует формату Galileo. Закрыто соедиение %s", conn.RemoteAddr())
 				return
 			}
@@ -47,7 +47,6 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 			buf := make([]byte, pkgLen)
 			if _, err := io.ReadFull(conn, buf); err != nil {
 				logger.Errorf("Ошибка при получении тела пакета: %v", err)
-				_ = conn.Close()
 				return
 			}
 
@@ -60,7 +59,6 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 			return
 		default:
 			logger.Errorf("Ошибка при получении: %v", err)
-			conn.Close()
 			return
 		}
 
@@ -69,8 +67,7 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 		if err := pkg.Decode(recvPacket); err != nil {
 			logger.Warn("Ошибка расшифровки пакета")
 			logger.Error(err)
-
-			goto Received
+			return
 		}
 
 		crc := make([]byte, 2)

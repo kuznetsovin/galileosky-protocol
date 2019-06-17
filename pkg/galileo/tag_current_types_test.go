@@ -41,3 +41,27 @@ func TestTimeTag_Parse(t *testing.T) {
 		)
 	}
 }
+
+func TestCoordTag_Parse(t *testing.T) {
+	b := []byte{0x07, 0xC0, 0x0E, 0x32, 0x03, 0xB8, 0xD7, 0x2D, 0x05}
+	r := coordTag{}
+
+	if assert.NoError(t, r.Parse(b)) {
+		assert.Equal(t,
+			coordTag{7, 0, 86.890424, 53.612224},
+			r,
+		)
+	}
+}
+
+func TestSpeedTag_Parse(t *testing.T) {
+	b := []byte{0x5C, 0x00, 0x48, 0x08}
+	r := speedTag{}
+
+	if assert.NoError(t, r.Parse(b)) {
+		assert.Equal(t,
+			speedTag{9.2, 212},
+			r,
+		)
+	}
+}

@@ -36,6 +36,7 @@ type anSensor struct {
 	Value        uint32 `json:"value"`
 }
 
+// GalileoPaket структура пакета протокола GalileoSky
 type GalileoPaket struct {
 	Header byte   `json:"header"`
 	Length uint16 `json:"length"`
@@ -43,6 +44,7 @@ type GalileoPaket struct {
 	Crc16  uint16 `json:"crc"`
 }
 
+// Decode декодирует пакет
 func (g *GalileoPaket) Decode(pkg []byte) error {
 	var (
 		err error

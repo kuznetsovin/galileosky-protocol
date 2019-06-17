@@ -102,3 +102,21 @@ func (u *intTag) Parse(val []byte) error {
 
 	return nil
 }
+
+type bitsTag struct {
+	Val string `json:"val"`
+}
+
+func (b *bitsTag) Parse(val []byte) error {
+
+	switch size := len(val); {
+	case size == 1:
+		b.Val = fmt.Sprintf("%08b", val[0])
+	case size == 2:
+		b.Val = fmt.Sprintf("%016b", binary.LittleEndian.Uint16(val))
+	default:
+		return fmt.Errorf("Входной массив больше 2 байт: %x", val)
+	}
+
+	return nil
+}

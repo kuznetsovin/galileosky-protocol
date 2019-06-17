@@ -77,3 +77,15 @@ func TestIntTag_Parse(t *testing.T) {
 		)
 	}
 }
+
+func TestBitsTag_Parse(t *testing.T) {
+	b := []byte{0x01, 0x3a}
+	r := bitsTag{}
+
+	if assert.NoError(t, r.Parse(b)) {
+		assert.Equal(t,
+			bitsTag{"0011101000000001"},
+			r,
+		)
+	}
+}

@@ -1,4 +1,4 @@
-package main
+package galileo
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -14,7 +14,7 @@ func TestGalileoPaket_Decode(t *testing.T) {
 	v3 := stringTag("862057047745531")
 	v4 := uintTag(50)
 
-	testPaket := GalileoPaket{
+	testPaket := Packet{
 		Header: 0x01,
 		Length: 23,
 		Tags: tags{
@@ -26,7 +26,7 @@ func TestGalileoPaket_Decode(t *testing.T) {
 		Crc16: 18613,
 	}
 
-	p := GalileoPaket{}
+	p := Packet{}
 	if assert.NoError(t, p.Decode(testPaketBin)) {
 		assert.Equal(t, testPaket, p)
 	}

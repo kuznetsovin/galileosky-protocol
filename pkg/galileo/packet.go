@@ -1,4 +1,4 @@
-package main
+package galileo
 
 import (
 	"bytes"
@@ -7,37 +7,8 @@ import (
 	"strconv"
 )
 
-type galileoParsePacket struct {
-	Client              uint32         `json:"client"`
-	PacketID            uint32         `json:"packet_id"`
-	NavigationTimestamp int64          `json:"navigation_unix_time"`
-	ReceivedTimestamp   int64          `json:"received_unix_time"`
-	Latitude            float64        `json:"latitude"`
-	Longitude           float64        `json:"longitude"`
-	Speed               uint16         `json:"speed"`
-	Pdop                uint16         `json:"pdop"`
-	Hdop                uint16         `json:"hdop"`
-	Vdop                uint16         `json:"vdop"`
-	Nsat                uint8          `json:"nsat"`
-	Ns                  uint16         `json:"ns"`
-	Course              uint8          `json:"course"`
-	AnSensors           []anSensor     `json:"an_sensors"`
-	LiquidSensors       []liquidSensor `json:"liquid_sensors"`
-}
-
-type liquidSensor struct {
-	SensorNumber uint8  `json:"sensor_number"`
-	ValueMm      uint32 `json:"value_mm"`
-	ValueL       uint32 `json:"value_l"`
-}
-
-type anSensor struct {
-	SensorNumber uint8  `json:"sensor_number"`
-	Value        uint32 `json:"value"`
-}
-
-// GalileoPaket структура пакета протокола GalileoSky
-type GalileoPaket struct {
+// Packet структура пакета протокола GalileoSky
+type Packet struct {
 	Header byte   `json:"header"`
 	Length uint16 `json:"length"`
 	Tags   tags   `json:"tags"`
@@ -45,7 +16,7 @@ type GalileoPaket struct {
 }
 
 // Decode декодирует пакет
-func (g *GalileoPaket) Decode(pkg []byte) error {
+func (g *Packet) Decode(pkg []byte) error {
 	var (
 		err error
 	)
@@ -105,6 +76,6 @@ func (g *GalileoPaket) Decode(pkg []byte) error {
 	return err
 }
 
-func (g *GalileoPaket) encode() error {
+func (g *Packet) encode() error {
 	return nil
 }

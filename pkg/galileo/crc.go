@@ -1,4 +1,4 @@
-package main
+package galileo
 
 func crc16(data []byte) uint16 {
 	var mbTable = []uint16{

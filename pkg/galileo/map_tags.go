@@ -1,4 +1,4 @@
-package main
+package galileo
 
 type tagDesc struct {
 	Len  uint

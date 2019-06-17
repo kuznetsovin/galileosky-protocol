@@ -3,34 +3,47 @@ package galileo
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
 )
 
 type tagParser interface {
 	Parse(val []byte) error
 }
 
-type uintTag uint64
+type uintTag struct {
+	uint64
+}
 
 func (u *uintTag) Parse(val []byte) error {
-	var v uintTag
-
 	switch size := len(val); {
 	case size == 1:
-		v = uintTag(val[0])
+		u.uint64 = uint64(val[0])
 	case size == 2:
-		v = uintTag(binary.LittleEndian.Uint16(val))
+		u.uint64 = uint64(binary.LittleEndian.Uint16(val))
 	default:
 		return fmt.Errorf("Входной массив больше 2 байт: %x", val)
 	}
 
-	*u = v
 	return nil
 }
 
-type stringTag string
+type stringTag struct {
+	string
+}
 
 func (s *stringTag) Parse(val []byte) error {
-	*s = stringTag(string(val))
+	s.string = string(val)
+
+	return nil
+}
+
+type timeTag struct {
+	time.Time
+}
+
+func (s *timeTag) Parse(val []byte) error {
+	secs := int64(binary.LittleEndian.Uint32(val))
+	s.Time = time.Unix(secs, 0).UTC()
 
 	return nil
 }

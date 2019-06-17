@@ -5,8 +5,8 @@ import "fmt"
 type tags []tag
 
 type tag struct {
-	Tag   uint8
-	Value interface{}
+	Tag   uint8       `json:"tag"`
+	Value interface{} `json:"value"`
 }
 
 func (t *tag) SetValue(tagType string, val []byte) error {
@@ -14,9 +14,11 @@ func (t *tag) SetValue(tagType string, val []byte) error {
 
 	switch tagType {
 	case "uint":
-		v = new(uintTag)
+		v = &uintTag{}
 	case "string":
-		v = new(stringTag)
+		v = &stringTag{}
+	case "time":
+		v = &timeTag{}
 	default:
 		return fmt.Errorf("Неизвестный тип данных: %s. Значение: %x", tagType, val)
 	}

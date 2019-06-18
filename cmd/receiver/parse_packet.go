@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 type galileoParsePacket struct {
 	Client              uint32         `json:"client"`
 	PacketID            uint32         `json:"packet_id"`
@@ -16,6 +21,16 @@ type galileoParsePacket struct {
 	Course              uint8          `json:"course"`
 	AnSensors           []anSensor     `json:"an_sensors"`
 	LiquidSensors       []liquidSensor `json:"liquid_sensors"`
+}
+
+func (g galileoParsePacket) Save() error {
+	result, err := json.MarshalIndent(g, " ", " ")
+	if err != nil {
+		return fmt.Errorf("Ошибка парсинга данных: %v", err)
+	}
+
+	fmt.Println(string(result))
+	return err
 }
 
 type liquidSensor struct {

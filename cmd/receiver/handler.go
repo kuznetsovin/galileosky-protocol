@@ -18,9 +18,8 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 
 	//packet.GalileoPaket
 	logger.Warnf("Установлено соединение с %s", conn.RemoteAddr())
-
+	outPkg := galileoParsePacket{}
 	for {
-	Received:
 		connTimer := time.NewTimer(ttl)
 
 		// считываем заголовок пакета
@@ -70,12 +69,59 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 			return
 		}
 
+		recievedTime := time.Now().UTC().Unix()
 		crc := make([]byte, 2)
 		binary.LittleEndian.PutUint16(crc, pkg.Crc16)
 		resp := append([]byte{0x02}, crc...)
 
 		if _, err = conn.Write(resp); err != nil {
 			logger.Errorf("Ошибка отправки пакета подтверждения: %v", err)
+		}
+
+		if len(pkg.Tags) < 1 {
+			continue
+		}
+
+		outPkg.ReceivedTimestamp = recievedTime
+		prevTag := uint8(0)
+		isSave := false
+		for _, curTag := range pkg.Tags {
+			if prevTag > curTag.Tag && isSave {
+				if err := outPkg.Save(); err != nil {
+					logger.Error(err)
+				}
+				client := outPkg.Client
+				outPkg = galileoParsePacket{
+					Client:            client,
+					ReceivedTimestamp: recievedTime,
+				}
+				isSave = false
+			}
+			switch curTag.Tag {
+			case 0x04:
+				val := curTag.Value.(*galileo.UintTag)
+				outPkg.Client = uint32(val.Val)
+			case 0x10:
+				val := curTag.Value.(*galileo.UintTag)
+				outPkg.PacketID = uint32(val.Val)
+			case 0x20:
+				val := curTag.Value.(*galileo.TimeTag)
+				outPkg.NavigationTimestamp = val.Val.Unix()
+			case 0x30:
+				val := curTag.Value.(*galileo.CoordTag)
+				outPkg.Nsat = val.Nsat
+				outPkg.Latitude = val.Latitude
+				outPkg.Longitude = val.Longitude
+				isSave = true
+			case 0x33:
+				val := curTag.Value.(*galileo.SpeedTag)
+				outPkg.Course = uint8(val.Course)
+				outPkg.Speed = uint16(val.Speed)
+			case 0x35:
+				val := curTag.Value.(*galileo.UintTag)
+				outPkg.Hdop = uint16(val.Val)
+			}
+			prevTag = curTag.Tag
 		}
 
 	}

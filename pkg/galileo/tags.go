@@ -14,19 +14,19 @@ func (t *tag) SetValue(tagType string, val []byte) error {
 
 	switch tagType {
 	case "uint":
-		v = &uintTag{}
+		v = &UintTag{}
 	case "string":
-		v = &stringTag{}
+		v = &StringTag{}
 	case "time":
-		v = &timeTag{}
+		v = &TimeTag{}
 	case "coord":
-		v = &coordTag{}
+		v = &CoordTag{}
 	case "speed":
-		v = &speedTag{}
+		v = &SpeedTag{}
 	case "int":
-		v = &intTag{}
+		v = &IntTag{}
 	case "bitstring":
-		v = &bitsTag{}
+		v = &BitsTag{}
 	default:
 		return fmt.Errorf("Неизвестный тип данных: %s. Значение: %x", tagType, val)
 	}

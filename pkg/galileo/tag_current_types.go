@@ -10,11 +10,13 @@ type tagParser interface {
 	Parse(val []byte) error
 }
 
-type uintTag struct {
+//UintTag тип тэга беззнаковое целое
+type UintTag struct {
 	Val uint64 `json:"val"`
 }
 
-func (u *uintTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (u *UintTag) Parse(val []byte) error {
 	switch size := len(val); {
 	case size == 1:
 		u.Val = uint64(val[0])
@@ -27,35 +29,41 @@ func (u *uintTag) Parse(val []byte) error {
 	return nil
 }
 
-type stringTag struct {
+//StringTag тип тэга строка
+type StringTag struct {
 	Val string `json:"val"`
 }
 
-func (s *stringTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (s *StringTag) Parse(val []byte) error {
 	s.Val = string(val)
 
 	return nil
 }
 
-type timeTag struct {
+//TimeTag тип тэга время
+type TimeTag struct {
 	Val time.Time `json:"val"`
 }
 
-func (t *timeTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (t *TimeTag) Parse(val []byte) error {
 	secs := int64(binary.LittleEndian.Uint32(val))
 	t.Val = time.Unix(secs, 0).UTC()
 
 	return nil
 }
 
-type coordTag struct {
-	Nsat      uint8
-	isValid   uint8
-	Longitude float64
-	Latitude  float64
+//TimeTag тип тэга с координатами
+type CoordTag struct {
+	Nsat      uint8   `json:"nsat"`
+	IsValid   uint8   `json:"is_valid"`
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
 }
 
-func (c *coordTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (c *CoordTag) Parse(val []byte) error {
 	if len(val) != 9 {
 		return fmt.Errorf(" Некорректная длин секции координат : %x", val)
 	}
@@ -66,17 +74,19 @@ func (c *coordTag) Parse(val []byte) error {
 	c.Longitude = float64(int32(binary.LittleEndian.Uint32(val[5:]))) / float64(1000000)
 
 	c.Nsat = flgByte & 0xf
-	c.isValid = flgByte >> 4
+	c.IsValid = flgByte >> 4
 
 	return nil
 }
 
-type speedTag struct {
-	Speed  float64
-	Course uint16
+//SpeedTag тип тэга со скоростью
+type SpeedTag struct {
+	Speed  float64 `json:"speed"`
+	Course uint16  `json:"course"`
 }
 
-func (s *speedTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (s *SpeedTag) Parse(val []byte) error {
 	if len(val) != 4 {
 		return fmt.Errorf(" Некорректная длин секции скорости : %x", val)
 	}
@@ -86,11 +96,13 @@ func (s *speedTag) Parse(val []byte) error {
 	return nil
 }
 
-type intTag struct {
+//IntTag тип тэга знаковго целого
+type IntTag struct {
 	Val int `json:"val"`
 }
 
-func (u *intTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (u *IntTag) Parse(val []byte) error {
 	switch size := len(val); {
 	case size == 1:
 		u.Val = int(val[0])
@@ -103,11 +115,13 @@ func (u *intTag) Parse(val []byte) error {
 	return nil
 }
 
-type bitsTag struct {
+//BitsTag тип тэга с битами
+type BitsTag struct {
 	Val string `json:"val"`
 }
 
-func (b *bitsTag) Parse(val []byte) error {
+//Parse заполняет значение тэга
+func (b *BitsTag) Parse(val []byte) error {
 
 	switch size := len(val); {
 	case size == 1:

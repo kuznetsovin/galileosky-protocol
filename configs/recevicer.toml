@@ -1,0 +1,4 @@
+host = "127.0.0.1"
+port = "6000"
+con_live_sec = 10
+log_level = "DEBUG"

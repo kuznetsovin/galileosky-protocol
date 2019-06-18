@@ -69,7 +69,7 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 			return
 		}
 
-		recievedTime := time.Now().UTC().Unix()
+		receivedTime := time.Now().UTC().Unix()
 		crc := make([]byte, 2)
 		binary.LittleEndian.PutUint16(crc, pkg.Crc16)
 		resp := append([]byte{0x02}, crc...)
@@ -82,7 +82,7 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 			continue
 		}
 
-		outPkg.ReceivedTimestamp = recievedTime
+		outPkg.ReceivedTimestamp = receivedTime
 		prevTag := uint8(0)
 		isSave := false
 		for _, curTag := range pkg.Tags {
@@ -93,7 +93,7 @@ func handleRecvPkg(conn net.Conn, ttl time.Duration) {
 				client := outPkg.Client
 				outPkg = galileoParsePacket{
 					Client:            client,
-					ReceivedTimestamp: recievedTime,
+					ReceivedTimestamp: receivedTime,
 				}
 				isSave = false
 			}

@@ -1,2 +1,4 @@
 # galileosky-protocol
-Implementation galileosky server protocol
+
+Base implementation galileo server [protocol](docs/galileo-protocol.pdf) without cryptography and compression.
+

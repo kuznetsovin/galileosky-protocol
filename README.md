@@ -5,8 +5,8 @@ Base implementation galileo server [protocol](docs/galileo-protocol.pdf) without
 ## Install
 
 ```
-git clone https://github.com/kuznetsovin/galileosky-receiver
-cd galileosky-receiver/tools && ./build-receiver.sh
+git clone https://github.com/kuznetsovin/galileosky-protocol
+cd galileosky-protocol/tools && ./build-receiver.sh
 ```
 
 ## Run

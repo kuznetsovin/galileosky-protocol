@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/binary"
-	"github.com/kuznetsovin/galileosky-protocol/pkg/galileo"
+	"github.com/kuznetsovin/galileosky-protocol/receiver/galileo"
 	"io"
 	"net"
 	"time"
